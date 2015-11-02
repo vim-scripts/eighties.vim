@@ -29,7 +29,12 @@ function! s:in_file_browser()
     return 1
   endif
 
-  for pattern in ["NERD_tree", "vimpanel"]
+  let patterns = ["NERD_tree", "vimpanel"]
+  if exists('g:eighties_bufname_additional_patterns')
+    let patterns = patterns + g:eighties_bufname_additional_patterns
+  endif
+
+  for pattern in patterns
     if bufname("%") =~ pattern
       return 1
     endif
@@ -59,7 +64,7 @@ function! s:total_left_width()
     return 0
   endif
 
-  return s:sign_width() + s:line_number_width() + s:extra_space_width()
+  return s:sign_width() + s:line_number_width()
 endfunction
 
 function! s:sign_width()
@@ -88,11 +93,7 @@ function! s:line_number_width()
   let l:numberwidth = &numberwidth
   let l:smallestwidth = strlen(line('$'))
 
-  return s:max([l:smallestwidth, l:numberwidth])
-endfunction
-
-function! s:extra_space_width()
-  return 1
+  return s:max([l:smallestwidth, l:numberwidth]) + 1
 endfunction
 
 function! s:max(list)
